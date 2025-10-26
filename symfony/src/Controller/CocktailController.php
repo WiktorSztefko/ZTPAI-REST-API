@@ -48,5 +48,24 @@ final class CocktailController extends AbstractController
         );
     }
 
-    
+    #[Route('/api/cocktails/{id}', name: 'get_cocktail_by_id', methods: ['GET'])]
+    public function getCocktailById(string $id): JsonResponse
+    {
+        if (!isset($this->cocktails[$id])) {
+            return $this->json(
+                ['error' => 'Cocktail not found'],
+                404,
+                ['Content-Type' => 'application/json; charset=utf-8'],
+            );
+        }
+
+        $json = json_encode($this->cocktails[$id], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+
+        return new JsonResponse(
+            $json,
+            200,
+            ['Content-Type' => 'application/json; charset=utf-8'],
+            true
+        );
+    }
 }
