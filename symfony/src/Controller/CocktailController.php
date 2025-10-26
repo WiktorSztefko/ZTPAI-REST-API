@@ -38,7 +38,7 @@ final class CocktailController extends AbstractController
     #[Route('/api/cocktails', name: 'get_cocktails', methods: ['GET'])]
     public function getCocktails(): JsonResponse
     {
-        $json = json_encode($this->cocktails, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); // zachowanie polskich znaków
+        $json = json_encode($this->cocktails, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); // zachowanie polskich znaków, wyświetlenie w postaci wcięć
 
         return new JsonResponse(
             $json,
@@ -51,6 +51,14 @@ final class CocktailController extends AbstractController
     #[Route('/api/cocktails/{id}', name: 'get_cocktail_by_id', methods: ['GET'])]
     public function getCocktailById(string $id): JsonResponse
     {
+        if (!ctype_digit($id)) {
+            return $this->json(
+                ['error' => 'Invalid ID format. ID must be a numeric value.'],
+                400,
+                ['Content-Type' => 'application/json; charset=utf-8'],
+            );
+        }
+
         if (!isset($this->cocktails[$id])) {
             return $this->json(
                 ['error' => 'Cocktail not found'],
